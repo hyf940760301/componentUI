@@ -1,0 +1,3 @@
+FROM registry.cn-hangzhou.aliyuncs.com/shanbay/nodemicro:14-onbuild
+
+RUN sh ./dockerfile/nodebuild.sh

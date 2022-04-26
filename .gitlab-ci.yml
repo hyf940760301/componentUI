@@ -1,0 +1,75 @@
+stages:
+    - build_image
+    - deploy_integration
+    - deploy_staging
+    - deploy_production
+variables:
+    NODE_ENV: testing
+    DOCKER_HOST: tcp://dockerd:2375
+    IMAGE: registry.cn-hangzhou.aliyuncs.com/shanbayapp/${CI_PROJECT_PATH_SLUG}
+    IMAGE_INTERNAL: registry-vpc.cn-hangzhou.aliyuncs.com/shanbayapp/${CI_PROJECT_PATH_SLUG}
+    IMAGE_CACHE: registry-vpc.cn-hangzhou.aliyuncs.com/shanbayapp/${CI_PROJECT_PATH_SLUG}
+
+
+before_script:
+    - IMAGE_TAG_INTEGRATION="${IMAGE}:${CI_COMMIT_SHA:0:8}-integration"
+    - IMAGE_TAG_INTEGRATION_INTERNAL="${IMAGE_INTERNAL}:${CI_COMMIT_SHA:0:8}-integration"
+    - IMAGE_TAG_STAGING="${IMAGE}:${CI_COMMIT_SHA:0:8}-staging"
+    - IMAGE_TAG_STAGING_INTERNAL="${IMAGE_INTERNAL}:${CI_COMMIT_SHA:0:8}-staging"
+    - IMAGE_TAG_PRODUCTION="${IMAGE}:${CI_COMMIT_SHA:0:8}-production"
+    - IMAGE_TAG_PRODUCTION_INTERNAL="${IMAGE_INTERNAL}:${CI_COMMIT_SHA:0:8}-production"
+
+#========================================== Build Image =================================================
+build_image:
+    stage: build_image
+    image: registry-vpc.cn-hangzhou.aliyuncs.com/shanbay/kaniko-executor:v1.3.0-debug
+    only:
+        - master
+        - dev
+        - /^f(eat|ix)\/.*$/
+    tags:
+        - build-serverless
+    script:
+        - mkdir -p /kaniko/.docker
+        - echo "{\"auths\":{\"registry.cn-hangzhou.aliyuncs.com\":{\"username\":\"${DOCKER_USERNAME}\",\"password\":\"${DOCKER_PASSWORD}\"},\"registry-vpc.cn-hangzhou.aliyuncs.com\":{\"username\":\"${DOCKER_USERNAME}\",\"password\":\"${DOCKER_PASSWORD}\"}}}" > /kaniko/.docker/config.json
+        - /kaniko/executor --context ${CI_PROJECT_DIR} --dockerfile ${CI_PROJECT_DIR}/dockerfile/Dockerfile-integration --destination ${IMAGE_TAG_INTEGRATION_INTERNAL} --cache=true --cache-ttl=24h --cache-repo=${IMAGE_CACHE} --log-timestamp=true --snapshotMode=redo
+        - echo ${IMAGE_TAG_INTEGRATION}
+        - /kaniko/executor --context ${CI_PROJECT_DIR} --dockerfile ${CI_PROJECT_DIR}/dockerfile/Dockerfile-staging --destination ${IMAGE_TAG_STAGING_INTERNAL} --cache=true --cache-ttl=24h --cache-repo=${IMAGE_CACHE} --log-timestamp=true --snapshotMode=redo
+        - echo ${IMAGE_TAG_STAGING}
+        - /kaniko/executor --context ${CI_PROJECT_DIR} --dockerfile ${CI_PROJECT_DIR}/dockerfile/Dockerfile-production --destination ${IMAGE_TAG_PRODUCTION_INTERNAL} --cache=true --cache-ttl=24h --cache-repo=${IMAGE_CACHE} --log-timestamp=true --snapshotMode=redo
+        - echo ${IMAGE_TAG_PRODUCTION}
+
+
+deploy_integration:
+    stage: deploy_integration
+    only:
+        - master
+        - dev
+        - /^f(eat|ix)\/.*$/
+    when: manual
+    tags:
+        - deploy-integration
+    script:
+        - kubectl -n cuckoo set image deploy.apps/ui-components-webadm "app=${IMAGE_TAG_INTEGRATION}" --record
+
+deploy_staging:
+    stage: deploy_staging
+    only:
+        - master
+        - dev
+        - /^f(eat|ix)\/.*$/
+    tags:
+        - deploy-staging
+    when: manual
+    script:
+        - kubectl -n cuckoo set image deploy.apps/ui-components-webadm "app=${IMAGE_TAG_STAGING}" --record
+
+deploy_production:
+    stage: deploy_production
+    only:
+        - master
+    tags:
+        - deploy-production
+    when: manual
+    script:
+        - kubectl -n cuckoo set image deploy.apps/ui-components-webadm "app=${IMAGE_TAG_PRODUCTION}" --record

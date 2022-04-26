@@ -1,0 +1,92 @@
+.bayui-content-container {
+    width: 100%;
+    background-color: #fff;
+}
+
+.bayui-content-title {
+    width: 100%;
+    height: 30px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &-left {
+        margin-bottom: 30px;
+        font-weight: 500;
+        &-default {
+            font-size: 18px;
+        }
+        &-middle {
+            font-size: 20px;
+        }
+        &-large {
+            font-size: 25px;
+        }
+    }
+    &-right {
+        margin-bottom: 30px;
+        display: flex;
+        > * {
+            margin-left: 15px;
+        }
+    }
+}
+
+.bayui-content-inf {
+    width: 100%;
+    margin-top: 20px;
+    &-left {
+        display: flex;
+        justify-content: flex-start;
+    }
+    &-middle {
+        display: flex;
+        justify-content: center;
+    }
+    &-right {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    &-font-vertical {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        border: 1px solid #969faf;
+    }
+    &-font-horizontal {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        border: 1px solid #969faf;
+    }
+}
+
+.bayui-content-inf-font-item {
+    display: flex;
+}
+
+// 图文模式下的内容部分
+.bayui-content-inf-img-border-left {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    border: 1px solid #969faf;
+}
+
+.bayui-content-inf-img-border-right {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    border: 1px solid #969faf;
+}
+
+.bayui-content-img-default-size {
+    width: 250px;
+    height: 250px;
+}

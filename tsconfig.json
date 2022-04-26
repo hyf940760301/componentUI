@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "esModuleInterop": true,
+        "types": ["jest"],
+        "strict": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "paths": {
+            "shanbay-ui": ["./src/index.ts"]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "lib",
+        "es",
+        "dist",
+        "docs",
+        "docs-dist",
+        "**/__test__",
+        "test",
+        "**/demo",
+        "**/**.md",
+        "**/_common/base.ts",
+        "**/_utils/request.ts",
+        "**/_utils/store.ts"
+    ]
+}

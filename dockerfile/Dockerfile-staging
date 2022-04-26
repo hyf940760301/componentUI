@@ -1,0 +1,6 @@
+FROM registry.cn-hangzhou.aliyuncs.com/shanbay/nodemicro:14-onbuild AS builder
+RUN sh ./dockerfile/nodebuild.sh
+
+FROM registry.cn-hangzhou.aliyuncs.com/shanbay/nginx:stable-alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /usr/src/app/release/staging /usr/share/nginx/html/

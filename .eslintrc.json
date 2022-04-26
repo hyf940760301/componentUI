@@ -1,0 +1,53 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "es2021": true
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "parser": "@babel/eslint-parser",
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "rules": {
+        "react/display-name": "off",
+        "react/prop-types": "warn",
+        "no-unused-vars": "warn",
+        "prettier/prettier": "warn",
+        "@typescript-eslint/no-var-requires": 0
+    },
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module"
+    },
+    "overrides": [
+        {
+            "files": ["*.{ts,tsx}"],
+            "parser": "@typescript-eslint/parser",
+            "plugins": ["@typescript-eslint"],
+            "extends": [
+                "eslint:recommended",
+                "plugin:react/recommended",
+                "plugin:react-hooks/recommended",
+                "plugin:prettier/recommended",
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "rules": {
+                "react/display-name": "off",
+                "react/prop-types": "off",
+                "@typescript-eslint/explicit-module-boundary-types": "off"
+            }
+        }
+    ],
+    "globals": {
+        "$": true,
+        "notify": true
+    }
+}
